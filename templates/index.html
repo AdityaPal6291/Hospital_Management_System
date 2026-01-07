@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RTV Hospital Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; background: #f4f7f6; }
+        .sidebar { width: 260px; background: #2c3e50; height: 100vh; color: white; position: fixed; }
+        .sidebar-header { padding: 20px; text-align: center; background: #1a252f; }
+        .sidebar-menu { list-style: none; padding: 0; }
+        .sidebar-menu li { padding: 15px 25px; cursor: pointer; transition: 0.3s; }
+        .sidebar-menu li:hover { background: #34495e; }
+        .content { margin-left: 260px; padding: 30px; width: 100%; }
+        .section { display: none; }
+        .active { display: block; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        .btn { background: #3498db; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header"><h3>🏥 RTV Hospital</h3></div>
+    <ul class="sidebar-menu">
+        <li onclick="show('home')"><i class="fas fa-home"></i> Home</li>
+        <li onclick="show('patient')"><i class="fas fa-user-plus"></i> Patient Admission</li>
+        <li onclick="show('doctor')"><i class="fas fa-user-md"></i> Doctor Form</li>
+        <li onclick="location.href='/logout'"><i class="fas fa-sign-out-alt"></i> Logout</li>
+    </ul>
+</div>
+
+<div class="content">
+    <div id="home" class="section active">
+        <div class="card">
+            <h2>Dashboard Overview</h2>
+            <p>Stock: Paracetamol ({{inventory.Paracetamol}})</p>
+            <h3>Critical Patients</h3>
+            <table>
+                <tr><th>Name</th><th>Phone</th><th>Bill</th></tr>
+                {% for p in critical %}
+                <tr style="color: red;"><td>{{ p.name }}</td><td>{{ p.phone }}</td><td>{{ p.bill }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div id="patient" class="section">
+        <div class="card">
+            <h2>Patient Admission Form</h2>
+            <form action="/add_patient" method="POST">
+                <input type="text" name="name" placeholder="Patient Name" required>
+                <input type="text" name="phone" placeholder="Phone Number" required>
+                <label>Admission Date</label><input type="date" name="adm_date" required>
+                <label>Discharge Date</label><input type="date" name="dis_date" required>
+                <select name="condition">
+                    <option value="Normal">Normal</option>
+                    <option value="Critical">Critical</option>
+                </select>
+                <button type="submit" class="btn">Confirm Admission</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="doctor" class="section">
+        <div class="card">
+            <h2>Add Doctor</h2>
+            <form action="/add_doctor" method="POST">
+                <input type="text" name="doc_name" placeholder="Doctor Name" required>
+                <input type="text" name="specialty" placeholder="Specialty" required>
+                <select name="status">
+                    <option value="Available">Available</option>
+                    <option value="Busy">Busy</option>
+                </select>
+                <button type="submit" class="btn" style="background: #27ae60;">Update Duty</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+</script>
+</body>
+</html>
