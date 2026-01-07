@@ -25,9 +25,12 @@ firebase_config = {
     "client_x509_cert_url": os.environ["FIREBASE_CLIENT_X509_CERT_URL"]
 }
 
-cred = credentials.Certificate(r"C:\Users\ADITYA\Downloads\RTV hospital project\RTV hospital project\key.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()  # If you are using Firestore
+if not firebase_admin._apps:
+    cred = credentials.Certificate(firebase_config)
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+ # If you are using Firestore
 
 
 # --- Login logic ---
@@ -96,6 +99,6 @@ def logout():
     session.pop('logged_in', None)
     return redirect(url_for('login'))
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+# if __name__ == '__main__':
+#     app.run(debug=True, port=5000)
 
